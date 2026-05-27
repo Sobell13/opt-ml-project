@@ -1,0 +1,11 @@
+{
+  "optimizer": "sgd",
+  "learning_rate": 0.05,
+  "batch_size": 64,
+  "seed": 0,
+  "final_train_loss": 0.16562060961325964,
+  "final_test_loss": 0.28161639728546145,
+  "final_test_accuracy": 0.9011,
+  "checkpoint_path": "week1\\results\\sgd_small.pt",
+  "history_path": "week1\\results\\sgd_small_history.json"
+}

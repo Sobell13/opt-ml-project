@@ -1,0 +1,11 @@
+{
+  "optimizer": "adam",
+  "learning_rate": 0.001,
+  "batch_size": 64,
+  "seed": 0,
+  "final_train_loss": 0.15062440150777498,
+  "final_test_loss": 0.26592498333454134,
+  "final_test_accuracy": 0.9088,
+  "checkpoint_path": "week1\\results\\adam_small.pt",
+  "history_path": "week1\\results\\adam_small_history.json"
+}
