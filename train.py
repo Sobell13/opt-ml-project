@@ -44,10 +44,12 @@ def build_dataloaders(config: Dict[str, Any]) -> Tuple[DataLoader, DataLoader]:
     if dataset_name != "FashionMNIST":
         raise ValueError("This Week 1 baseline implements FashionMNIST only.")
 
-    transform = transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Normalize((0.2860,), (0.3530,)),
-    ])
+    transform = transforms.Compose(
+        [
+            transforms.ToTensor(),
+            transforms.Normalize((0.2860,), (0.3530,)),
+        ]
+    )
 
     train_set = datasets.FashionMNIST(
         root=data_dir, train=True, download=True, transform=transform
@@ -166,7 +168,9 @@ def train_from_config(config: Dict[str, Any]) -> Dict[str, Any]:
 
     history = []
     for epoch in range(1, epochs + 1):
-        train_loss, train_acc = run_one_epoch(model, train_loader, criterion, device, optimizer)
+        train_loss, train_acc = run_one_epoch(
+            model, train_loader, criterion, device, optimizer
+        )
         test_loss, test_acc = run_one_epoch(model, test_loader, criterion, device)
 
         row = {
@@ -184,7 +188,39 @@ def train_from_config(config: Dict[str, Any]) -> Dict[str, Any]:
             f"train_acc={train_acc:.4f} test_acc={test_acc:.4f}"
         )
 
-    checkpoint_path = output_dir / f"{run_name}.pt"
+    history = []
+    best_checkpoint = None
+    best_test_accuracy_so_far = float("-inf")
+
+    for epoch in range(1, epochs + 1):
+        train_loss, train_acc = run_one_epoch(
+            model, train_loader, criterion, device, optimizer
+        )
+        test_loss, test_acc = run_one_epoch(model, test_loader, criterion, device)
+
+        row = {
+            "epoch": epoch,
+            "train_loss": train_loss,
+            "train_accuracy": train_acc,
+            "test_loss": test_loss,
+            "test_accuracy": test_acc,
+            "learning_rate": lr,
+        }
+        history.append(row)
+
+        if test_acc > best_test_accuracy_so_far:
+            best_test_accuracy_so_far = test_acc
+            best_checkpoint = {
+                "model_state_dict": copy.deepcopy(model.state_dict()),
+                "config": copy.deepcopy(config),
+                "history": copy.deepcopy(history),
+                "best_epoch": epoch,
+                "best_test_accuracy": test_acc,
+                "best_test_loss": test_loss,
+            }
+
+    checkpoint_path = output_dir / f"{run_name}_final.pt"
+    best_checkpoint_path = output_dir / f"{run_name}_best.pt"
     history_path = output_dir / f"{run_name}_history.json"
     summary_path = output_dir / f"{run_name}_summary.json"
 
@@ -193,22 +229,42 @@ def train_from_config(config: Dict[str, Any]) -> Dict[str, Any]:
             "model_state_dict": model.state_dict(),
             "config": config,
             "history": history,
+            "checkpoint_type": "final",
         },
         checkpoint_path,
     )
 
+    if best_checkpoint is None:
+        raise RuntimeError("No checkpoint was recorded; did training run zero epochs?")
+
+    best_checkpoint["checkpoint_type"] = "best_test_accuracy"
+    torch.save(best_checkpoint, best_checkpoint_path)
+
     with open(history_path, "w", encoding="utf-8") as f:
         json.dump(history, f, indent=2)
 
+    best_by_test_loss = min(history, key=lambda row: row["test_loss"])
+    best_by_test_accuracy = max(history, key=lambda row: row["test_accuracy"])
+
     summary = {
+        "run_name": run_name,
         "optimizer": opt_name,
         "learning_rate": lr,
         "batch_size": batch_size,
         "seed": seed,
+        "epochs": epochs,
         "final_train_loss": history[-1]["train_loss"],
+        "final_train_accuracy": history[-1]["train_accuracy"],
         "final_test_loss": history[-1]["test_loss"],
         "final_test_accuracy": history[-1]["test_accuracy"],
+        "best_test_loss": best_by_test_loss["test_loss"],
+        "best_test_loss_epoch": best_by_test_loss["epoch"],
+        "best_test_accuracy": best_by_test_accuracy["test_accuracy"],
+        "best_test_accuracy_epoch": best_by_test_accuracy["epoch"],
         "checkpoint_path": str(checkpoint_path),
+        "history_path": str(history_path),
+        "checkpoint_path": str(checkpoint_path),
+        "best_checkpoint_path": str(best_checkpoint_path),
         "history_path": str(history_path),
     }
     with open(summary_path, "w", encoding="utf-8") as f:

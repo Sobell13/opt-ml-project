@@ -1,0 +1,18 @@
+{
+  "run_name": "sgd_bs64_lr0.1_seed0",
+  "optimizer": "sgd",
+  "learning_rate": 0.1,
+  "batch_size": 64,
+  "seed": 0,
+  "epochs": 20,
+  "final_train_loss": 0.2594590402126312,
+  "final_train_accuracy": 0.9047666666666667,
+  "final_test_loss": 0.3397776077270508,
+  "final_test_accuracy": 0.8835,
+  "best_test_loss": 0.30371726231575014,
+  "best_test_loss_epoch": 18,
+  "best_test_accuracy": 0.8975,
+  "best_test_accuracy_epoch": 18,
+  "checkpoint_path": "v2\\results\\sgd_bs64_lr0.1_seed0.pt",
+  "history_path": "v2\\results\\sgd_bs64_lr0.1_seed0_history.json"
+}

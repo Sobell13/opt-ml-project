@@ -1,0 +1,22 @@
+seed: 2
+device: auto
+output_dir: results
+run_name: adam_bs64_lr0.001_seed2
+model:
+  name: small_cnn
+  input_channels: 1
+  num_classes: 10
+data:
+  dataset: FashionMNIST
+  data_dir: ./data
+  num_workers: 2
+training:
+  epochs: 50
+  batch_size: 64
+optimizer:
+  name: adam
+  learning_rate: 0.001
+  betas:
+  - 0.9
+  - 0.999
+  weight_decay: 0.0005

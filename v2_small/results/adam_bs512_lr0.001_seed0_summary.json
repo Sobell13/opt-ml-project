@@ -1,0 +1,18 @@
+{
+  "run_name": "adam_bs512_lr0.001_seed0",
+  "optimizer": "adam",
+  "learning_rate": 0.001,
+  "batch_size": 512,
+  "seed": 0,
+  "epochs": 20,
+  "final_train_loss": 0.133314382314682,
+  "final_train_accuracy": 0.9527333333333333,
+  "final_test_loss": 0.2522038297653198,
+  "final_test_accuracy": 0.9125,
+  "best_test_loss": 0.24134698116779327,
+  "best_test_loss_epoch": 17,
+  "best_test_accuracy": 0.9156,
+  "best_test_accuracy_epoch": 17,
+  "checkpoint_path": "v2_small\\results\\adam_bs512_lr0.001_seed0.pt",
+  "history_path": "v2_small\\results\\adam_bs512_lr0.001_seed0_history.json"
+}

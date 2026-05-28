@@ -1,0 +1,13 @@
+checkpoint,optimizer,batch_size,learning_rate,top_hessian_eigenvalue,max_batches,power_iters
+adam_bs512_lr0.001_seed0.pt,adam,512,0.001,64.15306854248047,5,20
+adam_bs512_lr0.001_seed1.pt,adam,512,0.001,71.79005432128906,5,20
+adam_bs512_lr0.001_seed2.pt,adam,512,0.001,82.18667602539062,5,20
+adam_bs64_lr0.001_seed0.pt,adam,64,0.001,57.25312042236328,5,20
+adam_bs64_lr0.001_seed1.pt,adam,64,0.001,19.392711639404297,5,20
+adam_bs64_lr0.001_seed2.pt,adam,64,0.001,26.04822540283203,5,20
+sgd_bs512_lr0.05_seed0.pt,sgd,512,0.05,34.34052658081055,5,20
+sgd_bs512_lr0.05_seed1.pt,sgd,512,0.05,22.46800994873047,5,20
+sgd_bs512_lr0.05_seed2.pt,sgd,512,0.05,33.71870803833008,5,20
+sgd_bs64_lr0.01_seed0.pt,sgd,64,0.01,36.74320602416992,5,20
+sgd_bs64_lr0.01_seed1.pt,sgd,64,0.01,32.1255989074707,5,20
+sgd_bs64_lr0.01_seed2.pt,sgd,64,0.01,29.270709991455078,5,20

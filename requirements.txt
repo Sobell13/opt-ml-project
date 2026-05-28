@@ -1,5 +1,8 @@
-torch
-torchvision
-matplotlib
-pyyaml
-pandas
+--extra-index-url https://download.pytorch.org/whl/cu130
+
+matplotlib==3.10.9
+numpy==2.4.6
+pandas==3.0.3
+PyYAML==6.0.3
+torch==2.9.1+cu130
+torchvision==0.24.1+cu130

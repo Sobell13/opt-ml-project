@@ -1,0 +1,20 @@
+seed: 1
+device: auto
+output_dir: results
+run_name: sgd_bs64_lr0.01_seed1
+model:
+  name: small_cnn
+  input_channels: 1
+  num_classes: 10
+data:
+  dataset: FashionMNIST
+  data_dir: ./data
+  num_workers: 2
+training:
+  epochs: 50
+  batch_size: 64
+optimizer:
+  name: sgd
+  learning_rate: 0.01
+  momentum: 0.9
+  weight_decay: 0.0005

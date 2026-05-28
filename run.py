@@ -15,6 +15,11 @@ import yaml
 
 from plots import plot_loss_curves
 from train import train_from_config
+from plots import (
+    plot_best_accuracy_bar,
+    plot_loss_curves,
+    plot_test_accuracy_curves,
+)
 
 
 def load_yaml(path: str) -> dict:
@@ -59,9 +64,24 @@ def main() -> None:
         produced_histories.append(Path(result["summary"]["history_path"]))
 
     if args.make_plots:
+        produced_summaries = [
+            path.with_name(path.name.replace("_history.json", "_summary.json"))
+            for path in produced_histories
+        ]
+
         plot_loss_curves(
             produced_histories,
             figures_dir / "loss_curves.png",
+        )
+
+        plot_test_accuracy_curves(
+            produced_histories,
+            figures_dir / "test_accuracy_curves.png",
+        )
+
+        plot_best_accuracy_bar(
+            produced_summaries,
+            figures_dir / "best_test_accuracy.png",
         )
 
 

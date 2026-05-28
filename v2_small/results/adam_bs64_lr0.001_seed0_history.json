@@ -1,0 +1,162 @@
+[
+  {
+    "epoch": 1,
+    "train_loss": 0.41464194916089375,
+    "train_accuracy": 0.8493333333333334,
+    "test_loss": 0.3397781894445419,
+    "test_accuracy": 0.8778,
+    "learning_rate": 0.001
+  },
+  {
+    "epoch": 2,
+    "train_loss": 0.27980432601769767,
+    "train_accuracy": 0.8979833333333334,
+    "test_loss": 0.29349983668327334,
+    "test_accuracy": 0.8933,
+    "learning_rate": 0.001
+  },
+  {
+    "epoch": 3,
+    "train_loss": 0.2424352722843488,
+    "train_accuracy": 0.9125166666666666,
+    "test_loss": 0.26747714989185334,
+    "test_accuracy": 0.9041,
+    "learning_rate": 0.001
+  },
+  {
+    "epoch": 4,
+    "train_loss": 0.21840282457272212,
+    "train_accuracy": 0.9199,
+    "test_loss": 0.2511606376886368,
+    "test_accuracy": 0.9066,
+    "learning_rate": 0.001
+  },
+  {
+    "epoch": 5,
+    "train_loss": 0.20204930429855983,
+    "train_accuracy": 0.9255333333333333,
+    "test_loss": 0.24131626386642457,
+    "test_accuracy": 0.9141,
+    "learning_rate": 0.001
+  },
+  {
+    "epoch": 6,
+    "train_loss": 0.18844982275565467,
+    "train_accuracy": 0.9307833333333333,
+    "test_loss": 0.24005001690387726,
+    "test_accuracy": 0.915,
+    "learning_rate": 0.001
+  },
+  {
+    "epoch": 7,
+    "train_loss": 0.17763790488640469,
+    "train_accuracy": 0.93495,
+    "test_loss": 0.2286004155397415,
+    "test_accuracy": 0.9183,
+    "learning_rate": 0.001
+  },
+  {
+    "epoch": 8,
+    "train_loss": 0.1692509026904901,
+    "train_accuracy": 0.9378166666666666,
+    "test_loss": 0.22475294117927552,
+    "test_accuracy": 0.9188,
+    "learning_rate": 0.001
+  },
+  {
+    "epoch": 9,
+    "train_loss": 0.15863584827184676,
+    "train_accuracy": 0.9417166666666666,
+    "test_loss": 0.22884373831748964,
+    "test_accuracy": 0.9209,
+    "learning_rate": 0.001
+  },
+  {
+    "epoch": 10,
+    "train_loss": 0.15062440150777498,
+    "train_accuracy": 0.9444166666666667,
+    "test_loss": 0.26592498333454134,
+    "test_accuracy": 0.9088,
+    "learning_rate": 0.001
+  },
+  {
+    "epoch": 11,
+    "train_loss": 0.14465996142228443,
+    "train_accuracy": 0.9471833333333334,
+    "test_loss": 0.2389240260362625,
+    "test_accuracy": 0.9165,
+    "learning_rate": 0.001
+  },
+  {
+    "epoch": 12,
+    "train_loss": 0.13669672477642694,
+    "train_accuracy": 0.9497333333333333,
+    "test_loss": 0.22844372680187225,
+    "test_accuracy": 0.9214,
+    "learning_rate": 0.001
+  },
+  {
+    "epoch": 13,
+    "train_loss": 0.13008349696596463,
+    "train_accuracy": 0.9521,
+    "test_loss": 0.24166987359523773,
+    "test_accuracy": 0.9199,
+    "learning_rate": 0.001
+  },
+  {
+    "epoch": 14,
+    "train_loss": 0.12715767654279866,
+    "train_accuracy": 0.9534,
+    "test_loss": 0.25064988996982573,
+    "test_accuracy": 0.9155,
+    "learning_rate": 0.001
+  },
+  {
+    "epoch": 15,
+    "train_loss": 0.12088847296039264,
+    "train_accuracy": 0.9557666666666667,
+    "test_loss": 0.23875049118995667,
+    "test_accuracy": 0.9187,
+    "learning_rate": 0.001
+  },
+  {
+    "epoch": 16,
+    "train_loss": 0.11561182198325792,
+    "train_accuracy": 0.9577666666666667,
+    "test_loss": 0.25115435144901277,
+    "test_accuracy": 0.9143,
+    "learning_rate": 0.001
+  },
+  {
+    "epoch": 17,
+    "train_loss": 0.11319266319473585,
+    "train_accuracy": 0.9587833333333333,
+    "test_loss": 0.2413892765045166,
+    "test_accuracy": 0.9196,
+    "learning_rate": 0.001
+  },
+  {
+    "epoch": 18,
+    "train_loss": 0.10802148420413335,
+    "train_accuracy": 0.9599666666666666,
+    "test_loss": 0.252814878988266,
+    "test_accuracy": 0.9171,
+    "learning_rate": 0.001
+  },
+  {
+    "epoch": 19,
+    "train_loss": 0.1037661100725333,
+    "train_accuracy": 0.96215,
+    "test_loss": 0.25213368604183195,
+    "test_accuracy": 0.9159,
+    "learning_rate": 0.001
+  },
+  {
+    "epoch": 20,
+    "train_loss": 0.10111029201348623,
+    "train_accuracy": 0.9633833333333334,
+    "test_loss": 0.2634849900960922,
+    "test_accuracy": 0.9168,
+    "learning_rate": 0.001
+  }
+]
