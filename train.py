@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import copy
 import json
 import os
 import random
@@ -166,7 +167,12 @@ def train_from_config(config: Dict[str, Any]) -> Dict[str, Any]:
     batch_size = int(config["training"]["batch_size"])
     run_name = config.get("run_name", f"{opt_name}_lr{lr}_bs{batch_size}_seed{seed}")
 
+    # Single training loop: train for `epochs` epochs, log per-epoch metrics,
+    # and keep a snapshot of the best-by-test-accuracy checkpoint along the way
     history = []
+    best_checkpoint = None
+    best_test_accuracy_so_far = float("-inf")
+
     for epoch in range(1, epochs + 1):
         train_loss, train_acc = run_one_epoch(
             model, train_loader, criterion, device, optimizer
@@ -187,26 +193,6 @@ def train_from_config(config: Dict[str, Any]) -> Dict[str, Any]:
             f"train_loss={train_loss:.4f} test_loss={test_loss:.4f} "
             f"train_acc={train_acc:.4f} test_acc={test_acc:.4f}"
         )
-
-    history = []
-    best_checkpoint = None
-    best_test_accuracy_so_far = float("-inf")
-
-    for epoch in range(1, epochs + 1):
-        train_loss, train_acc = run_one_epoch(
-            model, train_loader, criterion, device, optimizer
-        )
-        test_loss, test_acc = run_one_epoch(model, test_loader, criterion, device)
-
-        row = {
-            "epoch": epoch,
-            "train_loss": train_loss,
-            "train_accuracy": train_acc,
-            "test_loss": test_loss,
-            "test_accuracy": test_acc,
-            "learning_rate": lr,
-        }
-        history.append(row)
 
         if test_acc > best_test_accuracy_so_far:
             best_test_accuracy_so_far = test_acc
@@ -261,8 +247,6 @@ def train_from_config(config: Dict[str, Any]) -> Dict[str, Any]:
         "best_test_loss_epoch": best_by_test_loss["epoch"],
         "best_test_accuracy": best_by_test_accuracy["test_accuracy"],
         "best_test_accuracy_epoch": best_by_test_accuracy["epoch"],
-        "checkpoint_path": str(checkpoint_path),
-        "history_path": str(history_path),
         "checkpoint_path": str(checkpoint_path),
         "best_checkpoint_path": str(best_checkpoint_path),
         "history_path": str(history_path),
