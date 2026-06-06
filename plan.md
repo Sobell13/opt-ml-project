@@ -27,8 +27,6 @@ Every claim is a **with-vs-without** comparison: SGD vs Adam, small vs large bat
 - **Keskar et al., 2017 — *On Large-Batch Training for Deep Learning: Generalization Gap and Sharp Minima.*** Large-batch training tends to converge to *sharper* minima, which correlate with *worse* generalization. → motivates the batch-size axis and the sharpness metric.
 - **Cohen et al., 2022 — *Adaptive Gradient Methods at the Edge of Stability.*** For adaptive optimizers like Adam, the curvature that actually matters is that of the *preconditioned* loss, not the raw Hessian — so raw sharpness can be misleading for Adam. → motivates the adaptivity axis and our raw-vs-preconditioned comparison (the novelty).
 
-*(Confirm exact citations/years against the PDFs.)*
-
 **Combined story:** test the Keskar sharpness–generalization link across batch sizes, then check whether it survives the switch to Adam once we apply Cohen's preconditioning correction.
 
 ---
@@ -54,7 +52,7 @@ Every claim is a **with-vs-without** comparison: SGD vs Adam, small vs large bat
 | 3 | **Loss-interpolation plot** — loss along `w(α) = (1−α)·w₁ + α·w₂` between a flat (small-batch SGD) and a sharp (large-batch Adam) minimum | The "basin shape" figure |
 | 4 | **Raw vs Adam-preconditioned curvature** (novelty) — recompute top curvature through Adam's preconditioner | Figure showing how much of Adam's "sharpness" is preconditioning |
 
-> Task 4 is moderate difficulty. If it proves unreliable under time pressure, fall back to a simpler proxy + a qualitative discussion of the preconditioning caveat.
+> Task 4 is moderate difficulty. If it proves unreliable, fall back to a simpler proxy + a qualitative discussion of the preconditioning caveat.
 
 ### Optional (only if agreed + time allows)
 
@@ -73,25 +71,6 @@ Every claim is a **with-vs-without** comparison: SGD vs Adam, small vs large bat
 
 ---
 
-## 6. Roles & timeline (to confirm as a group)
-
-**Suggested split:**
-
-- **Person A — experiments:** run the notebook on Colab (GPU), collect results, manage the repo (commits, README).
-- **Person B — report:** writing, figure captions, references, formatting, final submission.
-- **Person C — analysis & QA:** sanity-check results and methods, write the related-work paragraph, backup runner.
-
-**Schedule:**
-
-| When | Goal |
-|------|------|
-| Jun 6–7 | Pipeline/notebook ready; run core experiments; collect results |
-| Jun 8–10 | Report draft + final figures; group review |
-| Jun 11 | Reserved (other coursework) |
-| Jun 12 (AM) | Final proofread + submit (deadline 16:00) |
-
----
-
-## 7. Compute
+## 6. Compute
 
 Experiments run on **Google Colab (free GPU)** — the small CNN on Fashion-MNIST trains quickly there, far faster than on a laptop CPU. The optional CIFAR-10 runs need more time. A single notebook reproduces all results and figures end to end.
