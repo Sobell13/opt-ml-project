@@ -1,0 +1,191 @@
+[
+  {
+    "dataset": "FashionMNIST",
+    "optimizer": "sgd",
+    "batch_size": 32,
+    "seed": 0,
+    "final_test_acc": 0.8949,
+    "top_hessian": 0.778,
+    "sharpness": 0.00086
+  },
+  {
+    "dataset": "FashionMNIST",
+    "optimizer": "sgd",
+    "batch_size": 32,
+    "seed": 1,
+    "final_test_acc": 0.8934,
+    "top_hessian": 1.24,
+    "sharpness": 0.00102
+  },
+  {
+    "dataset": "FashionMNIST",
+    "optimizer": "sgd",
+    "batch_size": 32,
+    "seed": 2,
+    "final_test_acc": 0.8872,
+    "top_hessian": 2.338,
+    "sharpness": 0.0014
+  },
+  {
+    "dataset": "FashionMNIST",
+    "optimizer": "sgd",
+    "batch_size": 64,
+    "seed": 0,
+    "final_test_acc": 0.9102,
+    "top_hessian": 1.599,
+    "sharpness": 0.00049
+  },
+  {
+    "dataset": "FashionMNIST",
+    "optimizer": "sgd",
+    "batch_size": 64,
+    "seed": 1,
+    "final_test_acc": 0.9015,
+    "top_hessian": 1.811,
+    "sharpness": 0.00051
+  },
+  {
+    "dataset": "FashionMNIST",
+    "optimizer": "sgd",
+    "batch_size": 64,
+    "seed": 2,
+    "final_test_acc": 0.8991,
+    "top_hessian": 1.605,
+    "sharpness": 0.00051
+  },
+  {
+    "dataset": "FashionMNIST",
+    "optimizer": "sgd",
+    "batch_size": 128,
+    "seed": 0,
+    "final_test_acc": 0.9117,
+    "top_hessian": 2.616,
+    "sharpness": 0.00028
+  },
+  {
+    "dataset": "FashionMNIST",
+    "optimizer": "sgd",
+    "batch_size": 128,
+    "seed": 1,
+    "final_test_acc": 0.9097,
+    "top_hessian": 4.447,
+    "sharpness": 0.00064
+  },
+  {
+    "dataset": "FashionMNIST",
+    "optimizer": "sgd",
+    "batch_size": 128,
+    "seed": 2,
+    "final_test_acc": 0.9165,
+    "top_hessian": 3.322,
+    "sharpness": 0.00067
+  },
+  {
+    "dataset": "FashionMNIST",
+    "optimizer": "sgd",
+    "batch_size": 256,
+    "seed": 0,
+    "final_test_acc": 0.9116,
+    "top_hessian": 7.195,
+    "sharpness": 0.00061
+  },
+  {
+    "dataset": "FashionMNIST",
+    "optimizer": "sgd",
+    "batch_size": 256,
+    "seed": 1,
+    "final_test_acc": 0.915,
+    "top_hessian": 9.265,
+    "sharpness": 0.00103
+  },
+  {
+    "dataset": "FashionMNIST",
+    "optimizer": "sgd",
+    "batch_size": 256,
+    "seed": 2,
+    "final_test_acc": 0.9208,
+    "top_hessian": 8.297,
+    "sharpness": 0.00019
+  },
+  {
+    "dataset": "FashionMNIST",
+    "optimizer": "sgd",
+    "batch_size": 512,
+    "seed": 0,
+    "final_test_acc": 0.9081,
+    "top_hessian": 16.769,
+    "sharpness": 0.00221
+  },
+  {
+    "dataset": "FashionMNIST",
+    "optimizer": "sgd",
+    "batch_size": 512,
+    "seed": 1,
+    "final_test_acc": 0.9191,
+    "top_hessian": 15.351,
+    "sharpness": 0.00028
+  },
+  {
+    "dataset": "FashionMNIST",
+    "optimizer": "sgd",
+    "batch_size": 512,
+    "seed": 2,
+    "final_test_acc": 0.9205,
+    "top_hessian": 19.632,
+    "sharpness": 0.00036
+  },
+  {
+    "dataset": "FashionMNIST",
+    "optimizer": "sgd",
+    "batch_size": 1024,
+    "seed": 0,
+    "final_test_acc": 0.9091,
+    "top_hessian": 28.273,
+    "sharpness": 0.00048
+  },
+  {
+    "dataset": "FashionMNIST",
+    "optimizer": "sgd",
+    "batch_size": 1024,
+    "seed": 1,
+    "final_test_acc": 0.9149,
+    "top_hessian": 33.911,
+    "sharpness": 0.00062
+  },
+  {
+    "dataset": "FashionMNIST",
+    "optimizer": "sgd",
+    "batch_size": 1024,
+    "seed": 2,
+    "final_test_acc": 0.9162,
+    "top_hessian": 35.904,
+    "sharpness": 0.00046
+  },
+  {
+    "dataset": "FashionMNIST",
+    "optimizer": "adam",
+    "batch_size": 32,
+    "seed": 0,
+    "final_test_acc": 0.9128,
+    "top_hessian": 25.987,
+    "sharpness": 0.00134
+  },
+  {
+    "dataset": "FashionMNIST",
+    "optimizer": "adam",
+    "batch_size": 32,
+    "seed": 1,
+    "final_test_acc": 0.9152,
+    "top_hessian": 25.824,
+    "sharpness": 0.00188
+  },
+  {
+    "dataset": "FashionMNIST",
+    "optimizer": "adam",
+    "batch_size": 32,
+    "seed": 2,
+    "final_test_acc": 0.9129,
+    "top_hessian": 17.076,
+    "sharpness": 0.00116
+  }
+]
