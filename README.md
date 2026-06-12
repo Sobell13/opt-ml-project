@@ -66,9 +66,9 @@ supporting data or earlier pilot exploration kept for history.
 └── v1/ v2/ v2_final/ v2_small/ v3/       # Early exploration: pilot runs, figures, and notes
 ```
 
-The `results_geometry_part2_*.zip` archives at the root are the raw download bundles from the
-second-notebook run, kept as a backup of the per-run checkpoints (model weights with optimizer
-state).
+The `results_geometry_part2_FINAL.zip` archive at the root bundles the trained models from the
+second-notebook run (model weights with optimizer state), kept so the geometry measurements can
+be reproduced without retraining.
 
 ## Reproducing the results
 
