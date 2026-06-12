@@ -52,6 +52,7 @@ supporting data or earlier pilot exploration kept for history.
 .
 ├── optgeo_experiments.ipynb              # Main pipeline: full 36-run sweep + geometry + interpolation
 ├── optgeo_experiments_second_part.ipynb  # Remaining Adam runs + a flat-minimum checkpoint (has a TEST_MODE smoke test)
+├── analysis/                             # Scripts that regenerate the paper's figures and tables from the results
 ├── report/                               # Final 3-page report (PDF + LaTeX source)
 ├── results/
 │   ├── results_full.csv                  # Merged 36-run scalar results (SGD + Adam) used for the figures/tables
@@ -103,9 +104,21 @@ Open the notebooks in Colab (or Jupyter with a GPU) and run them top to bottom:
 > those salvaged SGD scalars with the Adam results from the second notebook, and is what the
 > figures and report tables are built from.
 
-### 3. Figures
+### 3. Regenerating the figures and tables
 
-The five figures in `results/figures/` map directly to the report:
+The figures and tables in the report are produced from the stored results by the scripts in
+`analysis/`, run from the repository root:
+
+```bash
+python analysis/make_figures.py              # Figures 1-3 and the full results table (Table 2)
+python analysis/preconditioned_curvature.py  # Figure 4 and the raw/preconditioned numbers (Table 3)
+python analysis/interpolation_figure.py      # Figure 5
+```
+
+`make_figures.py` needs only `results/results_full.csv`. The other two read the trained
+checkpoints, auto-extracting `results_geometry_part2_FINAL.zip` on first run, and
+`preconditioned_curvature.py` additionally downloads Fashion-MNIST via torchvision. All three
+write into `results/figures/`. The five figures map to the report as:
 
 | File | Content |
 | --- | --- |
