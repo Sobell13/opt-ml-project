@@ -1,0 +1,241 @@
+\documentclass[a4paper,10pt,twoside]{article}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{multicol}
+\usepackage{amsmath}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage[T1]{fontenc}
+\usepackage{wrapfig}
+% pour l'inclusion de liens dans le document 
+\usepackage[colorlinks,bookmarks=false,linkcolor=blue,urlcolor=blue]{hyperref}
+\paperheight=297mm
+\paperwidth=210mm
+\setlength{\textheight}{235mm}
+\setlength{\topmargin}{-1.4cm} % pour centrer la page verticalement
+\setlength{\textwidth}{17cm}
+\setlength{\oddsidemargin}{0.0cm}
+\setlength{\evensidemargin}{-0.3cm}
+\setlength{\columnsep}{0.7cm} % espacement entre colonnes
+\pagestyle{plain}
+% nouvelles commandes LaTeX, utilis\'ees comme abreviations utiles
+\def \be {\begin{equation}}
+\def \ee {\end{equation}}
+\def \dd  {{\rm d}}
+\newcommand{\mail}[1]{{\href{mailto:#1}{#1}}}
+\newcommand{\ftplink}[1]{{\href{ftp://#1}{#1}}}
+\newcommand{\deriv}{\mathrm{d}}
+\newcommand{\x}{(x)}
+\newcommand{\xt}{(x,t)}
+\newcommand{\partialx}[1]{\frac{\partial #1}{\partial x}}
+\newcommand{\partialt}[1]{\frac{\partial #1}{\partial t}}
+\newcommand{\partialxx}[1]{\frac{\partial^2 #1}{\partial x^2}}
+\newcommand{\partialtt}[1]{\frac{\partial^2 #1}{\partial t^2}}
+\setlength{\abovedisplayskip}{5pt} % Space above equations
+\setlength{\belowdisplayskip}{5pt} % Space below equations
+\setlength{\parskip}{0pt}          % Ensure no additional paragraph spacing
+%%% in your preamble %%%
+\usepackage{titlesec}
+\usepackage{enumitem}
+% reduce space before & after \section and \subsection
+\titlespacing*{\section}
+  {0pt}{1ex plus .1ex minus .1ex}{1ex plus .1ex}
+\titlespacing*{\subsection}
+  {0pt}{0.8ex plus .1ex minus .1ex}{0.8ex plus .1ex}
+\titlespacing*{\subsubsection}
+  {0pt}{0.5ex plus .1ex minus .1ex}{0.5ex plus .1ex}
+% remove extra vertical space in all itemize/enumerate
+\setlist{nosep, left=0pt}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{float}
+\renewcommand{\arraystretch}{1.5}
+% --- float placement tuning: let figures pack near the text instead of piling on a float page ---
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.9}
+\renewcommand{\textfraction}{0.05}
+\renewcommand{\floatpagefraction}{0.6}
+\setcounter{topnumber}{3}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{5}
+% ======= Le document commence ici ================================
+\begin{document}
+% --- Page de titre seule (page 1) ---
+\title{Sharpness, Batch Size, and Generalization:\\ A Controlled Study of SGD and Adam}
+\author{Alexandre Carel, Ljubomir Ceranic, Hervé Sérandour \\
+{\small \mail{alexandre.carel@epfl.ch}, \mail{ljubomir.ceranic@epfl.ch}, \mail{herve.serandour@epfl.ch}}}
+\date{\today}
+\begin{titlepage}
+  \thispagestyle{empty}
+  \maketitle
+\end{titlepage}
+% --- Corps du document en deux colonnes à partir de la page 2 ---
+\twocolumn
+\setcounter{page}{1}
+% Quelques options pour les espacements entre lignes, l'indentation 
+% des nouveaux paragraphes, et l'espacement entre paragraphes
+\baselineskip=14pt
+\parindent=0pt
+\parskip=10pt
+
+\textbf{\textit{Abstract. We study how mini-batch size and optimizer choice (SGD versus Adam) shape the curvature, or sharpness, of the minima a small convolutional network reaches on Fashion-MNIST, and whether that curvature predicts generalization. Sharpness is measured by the top Hessian eigenvalue and a random-direction probe on a fixed training subset. Sharpness grows steeply with batch size for both optimizers (about $23\times$ for SGD from batch 32 to 1024), and Adam reaches minima roughly 4 to 30 times sharper than SGD at the same batch size, with the gap widest at small batch. Despite this, test accuracy stays within a narrow band, so the raw top-Hessian sharpness is a weak predictor of generalization within an optimizer and an unreliable one across optimizers. Measuring Adam's curvature in its own preconditioned geometry, following Cohen et al., shows that the raw Hessian understates the curvature Adam actually navigates by one to two orders of magnitude, so raw-Hessian comparisons across optimizers are not meaningful.}}
+
+\section{Introduction}
+Generalization in deep learning is not explained by training loss alone, since networks that reach near-identical training loss can differ on held-out data. One explanation appeals to the geometry of the minimum found. Keskar et al.~\cite{keskar2017} report that large-batch training converges to sharper minima, regions of high loss curvature, that correlate with worse generalization, while small-batch SGD favours flatter minima. Adaptive optimizers complicate this picture. Cohen et al.~\cite{cohen2022} argue that for methods such as Adam the relevant curvature is that of the preconditioned loss, so the raw Hessian can misrepresent an adaptive optimizer's effective sharpness.
+
+We study these effects in a controlled, small-scale setting. Using a fixed convolutional network on Fashion-MNIST, we vary mini-batch size and optimizer (SGD versus Adam) and ask two questions: how do these choices affect the sharpness of the minimum reached, and does sharpness track generalization? The baseline is small-batch SGD, and each comparison changes a single factor.
+
+\section{Data}
+We use Fashion-MNIST: $60{,}000$ training and $10{,}000$ test grayscale images ($28\times28$, 10 classes), normalized with the dataset mean and standard deviation. The model is a small convolutional network with two convolutional blocks (32 and 64 channels, $3\times3$ kernels, ReLU, $2\times2$ max-pooling), an adaptive average-pooling layer, and two fully connected layers ($128$ then $10$ units). It has about $0.1$M parameters, kept small so the Hessian-based analysis stays tractable.
+
+\section{Methods}
+\textbf{Training.} We train with SGD (learning rate $0.05$, momentum $0.9$) and Adam (learning rate $10^{-3}$), with the learning rate fixed per optimizer so that batch size is the only variable along that axis. We sweep batch sizes $\{32, 64, 128, 256, 512, 1024\}$ over $3$ seeds, using cross-entropy loss and no weight decay.
+
+\textbf{Geometry.} All curvature is measured at the trained iterate on a fixed subset of $1024$ training examples, so every model is probed identically. We report the top Hessian eigenvalue, estimated by power iteration on Hessian-vector products (double backpropagation), and a random-direction sharpness, the worst loss increase over $10$ unit perturbations of norm $\rho\lVert w\rVert$ with $\rho = 0.01$. We also compute the loss along the linear interpolation $w(\alpha) = (1-\alpha)\,w_1 + \alpha\,w_2$ between a small-batch SGD minimum and a large-batch Adam minimum.
+
+\textbf{Preconditioned curvature.} Following Cohen et al., we additionally measure curvature in Adam's preconditioned geometry. We take the top eigenvalue of $P^{-1/2} H P^{-1/2}$, where $P = \mathrm{diag}(\sqrt{\hat{v}} + \epsilon)$ is built from Adam's bias-corrected second-moment estimate $\hat{v}$. For SGD the preconditioner is the identity, so its raw and preconditioned curvatures coincide.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Setting} & \textbf{Value} \\
+\midrule
+Dataset & Fashion-MNIST \\
+Optimizers & SGD (mom.\ 0.9), Adam \\
+Learning rate & SGD $0.05$, Adam $10^{-3}$ \\
+Batch sizes & 32, 64, 128, 256, 512, 1024 \\
+Seeds & 0, 1, 2 \\
+Geometry probe & 1024 training examples \\
+Hessian estimate & power iteration (20 steps) \\
+Sharpness probe & 10 dirs, $\rho = 0.01$ \\
+\bottomrule
+\end{tabular}
+\caption{Experimental configuration.}
+\label{tab:config}
+\end{table}
+
+\section{Ethical Risks}
+This is a methodological study on a public benchmark with no personal data or human subjects, so direct risks are limited. We note three secondary points. First, hyperparameter sweeps carry a compute and energy cost, which we limit by keeping the model small and the sweep modest. Second, single-dataset findings can be over-generalized, so we restrict our claims to the setting studied. Third, sharpness-based heuristics, if used to guide model selection in deployment, could mislead practitioners when extrapolated beyond the tested regimes, a risk our own results (a weak sharpness-accuracy link) illustrate directly.
+
+\section{Results and Conclusion}
+\textbf{Sharpness rises with batch size for both optimizers.} Figure~\ref{fig:sharp} shows the top Hessian eigenvalue increasing with batch size. For SGD it grows from about $1.5$ at batch 32 to about $33$ at batch 1024, roughly a $23\times$ increase. Adam follows the same upward trend (about $23$ to $141$) but sits an order of magnitude higher throughout, from about $4\times$ sharper than SGD at batch 1024 to about $30\times$ sharper at small batch. This reproduces the Keskar mechanism and shows it holds for both optimizers, with Adam consistently in a much higher curvature regime.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.92\linewidth]{1_sharpness_vs_batchsize.png}
+  \caption{Top Hessian eigenvalue versus batch size (mean and standard deviation over 3 seeds, log scale). Both optimizers grow sharper with larger batches, and Adam stays about an order of magnitude above SGD throughout.}
+  \label{fig:sharp}
+\end{figure}
+
+\textbf{Sharpness barely tracks generalization.} Test accuracy stays within roughly $89$ to $92\%$ across the whole sweep (Table~\ref{tab:results}), with a mild peak at intermediate batch sizes for SGD and a clearer decline at large batch for Adam. Although Adam's minima are up to roughly 30 times sharper than SGD's, the two optimizers reach almost the same accuracy, and Adam is slightly better at small batch. Figure~\ref{fig:accsharp} makes this explicit: curvature spans more than two orders of magnitude with no matching change in accuracy. On this task the raw top-Hessian sharpness is a weak predictor of generalization within an optimizer and an unreliable one across optimizers.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.92\linewidth]{3_accuracy_vs_sharpness.png}
+  \caption{Test accuracy versus top Hessian eigenvalue (log scale). Curvature spans more than two orders of magnitude while accuracy stays in a narrow band, so sharpness does not predict generalization.}
+  \label{fig:accsharp}
+\end{figure}
+
+\textbf{Interpolation corroborates the curvature gap.} Figure~\ref{fig:interp} shows the loss along a straight line between a small-batch SGD minimum and a large-batch Adam minimum. Both endpoints are low-loss and are separated by a modest barrier. The profile is strongly asymmetric: extrapolating past the SGD minimum raises the loss gently, whereas extrapolating past the Adam minimum raises it by more than three orders of magnitude over the same distance. The Adam solution therefore sits in a far narrower basin, consistent with its much larger Hessian eigenvalue.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.92\linewidth]{5_interpolation.png}
+  \caption{Training loss along the linear interpolation between a small-batch SGD minimum ($\alpha = 0$) and a large-batch Adam minimum ($\alpha = 1$), log scale. The loss rises gently past the SGD minimum but explodes past the Adam minimum, indicating a much narrower Adam basin.}
+  \label{fig:interp}
+\end{figure}
+
+\textbf{Raw versus preconditioned curvature.} The raw Hessian suggests Adam is simply much sharper than SGD, but that comparison ignores that Adam optimizes a preconditioned landscape. Measuring curvature in Adam's own geometry (Figure~\ref{fig:precond}) does not correct Adam's sharpness toward SGD's; it goes the other way. The preconditioned top eigenvalue is about 50 to 90 times the raw value, reaching the order of $10^3$ to $10^4$ and approaching Adam's edge-of-stability scale ($38/\eta$, with $\eta$ the learning rate). SGD's raw sharpness (about $1.5$ to $33$) instead sits on the scale of its own threshold ($2/\eta \approx 40$). The relevant curvature for each optimizer therefore lives in a different geometry, and the raw Hessian is the appropriate ruler only for SGD. This supports Cohen et al.'s point that raw-Hessian comparisons across optimizers are not meaningful. The preconditioned eigenvalue was estimated on a 128-example probe for tractability; its ratio to the raw value is robust to that choice.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.92\linewidth]{4_raw_vs_preconditioned.png}
+  \caption{Adam's raw versus preconditioned top eigenvalue (log scale). In Adam's own geometry the curvature is 50 to 90 times larger than the raw Hessian and approaches the edge-of-stability scale, so the raw Hessian understates Adam's effective sharpness.}
+  \label{fig:precond}
+\end{figure}
+
+\textbf{Conclusion.} Batch size and optimizer adaptivity strongly and predictably shape the curvature of the minima found. Curvature is only a loose predictor of generalization within an optimizer, and the raw Hessian is misleading across optimizers because each method stabilizes in a different geometry. Our results partially support the flat-minima view, since the batch-size to sharpness link is robust, while showing its limits as a generalization criterion on an easy benchmark.
+
+\begin{thebibliography}{9}
+\bibitem{keskar2017}
+N.~S.~Keskar, D.~Mudigere, J.~Nocedal, M.~Smelyanskiy, and P.~T.~P.~Tang,
+``On Large-Batch Training for Deep Learning: Generalization Gap and Sharp Minima,''
+\emph{ICLR}, 2017.
+\bibitem{cohen2022}
+J.~M.~Cohen et al.,
+``Adaptive Gradient Methods at the Edge of Stability,''
+\emph{arXiv:2207.14484}, 2022.
+\end{thebibliography}
+
+\newpage
+\onecolumn
+\section{Appendix}
+
+\subsection{Implementation and reproducibility}
+\textbf{Architecture.} The network (\texttt{SmallCNN}) applies two convolutional blocks, each a $3\times3$ convolution with padding $1$ followed by ReLU and $2\times2$ max-pooling, taking the single input channel to $32$ and then $64$ channels. An adaptive average-pooling layer fixes the spatial size to $4\times4$; the result is flattened and passed through a fully connected layer ($64\cdot4\cdot4 = 1024$ to $128$ units) with ReLU, then a final linear layer to the $10$ classes, for about $0.1$M parameters in total.
+
+\textbf{Training.} Every model trains for $30$ epochs with cross-entropy loss and no weight decay. SGD uses learning rate $0.05$ and momentum $0.9$; Adam uses learning rate $10^{-3}$ with its default $\beta_1 = 0.9$ and $\beta_2 = 0.999$. The default $\beta_1 = 0.9$ is the setting under which Adam's stability threshold takes the value $38/\eta$ used in the main text.
+
+\textbf{Geometry.} The top Hessian eigenvalue is estimated by $20$ steps of power iteration on Hessian-vector products formed by double backpropagation. The random-direction sharpness is the worst loss increase over $10$ unit directions at radius $\rho = 0.01$. Both quantities are evaluated on the same fixed $1024$-example training subset for every model, so all comparisons share one identical probe. Generalization is measured as accuracy on the full $10{,}000$-image test set.
+
+\textbf{Code.} All code, configurations, and result files are available at \url{https://github.com/Sobell13/opt-ml-project}.
+
+\subsection{Additional numerical results}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{llccc}
+\toprule
+Optimizer & Batch & Top Hessian & Sharpness ($\times10^{-3}$) & Test acc (\%) \\
+\midrule
+\multirow{6}{*}{SGD}
+ & 32 & 1.45 $\pm$ 0.65 & 1.09 $\pm$ 0.23 & 89.18 $\pm$ 0.33 \\
+ & 64 & 1.67 $\pm$ 0.10 & 0.50 $\pm$ 0.01 & 90.36 $\pm$ 0.48 \\
+ & 128 & 3.46 $\pm$ 0.75 & 0.53 $\pm$ 0.18 & 91.26 $\pm$ 0.29 \\
+ & 256 & 8.25 $\pm$ 0.85 & 0.61 $\pm$ 0.34 & 91.58 $\pm$ 0.38 \\
+ & 512 & 17.25 $\pm$ 1.78 & 0.95 $\pm$ 0.89 & 91.59 $\pm$ 0.55 \\
+ & 1024 & 32.70 $\pm$ 3.23 & 0.52 $\pm$ 0.07 & 91.34 $\pm$ 0.31 \\
+\midrule
+\multirow{6}{*}{Adam}
+ & 32 & 22.96 $\pm$ 4.16 & 1.46 $\pm$ 0.31 & 91.36 $\pm$ 0.11 \\
+ & 64 & 52.34 $\pm$ 15.99 & 0.97 $\pm$ 0.35 & 91.80 $\pm$ 0.17 \\
+ & 128 & 66.18 $\pm$ 14.09 & 1.02 $\pm$ 0.27 & 92.05 $\pm$ 0.37 \\
+ & 256 & 96.37 $\pm$ 13.21 & 1.03 $\pm$ 0.33 & 91.15 $\pm$ 0.75 \\
+ & 512 & 113.96 $\pm$ 12.54 & 1.76 $\pm$ 0.44 & 89.79 $\pm$ 0.39 \\
+ & 1024 & 141.24 $\pm$ 14.73 & 1.06 $\pm$ 0.51 & 89.28 $\pm$ 0.34 \\
+\bottomrule
+\end{tabular}
+\caption{Full results on Fashion-MNIST: mean $\pm$ standard deviation over 3 seeds. Sharpness is the random-direction probe.}
+\label{tab:results}
+\end{table}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lccc}
+\toprule
+Batch & Raw top eig. & Precond.\ top eig. & Ratio \\
+\midrule
+64 & 36.2 & 2045 & 56$\times$ \\
+128 & 40.9 & 2563 & 63$\times$ \\
+256 & 70.0 & 3654 & 52$\times$ \\
+512 & 85.6 & 6849 & 80$\times$ \\
+1024 & 122.8 & 11457 & 93$\times$ \\
+\bottomrule
+\end{tabular}
+\caption{Adam's raw versus preconditioned top eigenvalue, computed from one trained model per batch size. The preconditioned curvature is $50$ to $90$ times the raw value and grows toward Adam's edge-of-stability scale $38/\eta = 3.8\times10^{4}$ as the batch size increases, matching the minibatch behaviour predicted by Cohen et al. Both columns use the same $128$-example probe, so the raw values differ slightly from the $3$-seed, $1024$-example estimates in Table~\ref{tab:results}; the ratio is the quantity of interest and is robust to the probe.}
+\label{tab:precond}
+\end{table}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.55\linewidth]{2_accuracy_vs_batchsize.png}
+  \caption{Test accuracy versus batch size (mean and standard deviation over 3 seeds). SGD stays near $91\%$, while Adam peaks at intermediate batch size and declines at large batch.}
+  \label{fig:accbatch}
+\end{figure}
+
+\end{document} %%%% THE END %%%%
